@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>퇴직금 계산기 - 평균임금 기준 예상 퇴직금 계산</title>
+<meta name="description" content="입사일, 퇴사일, 최근 3개월 급여를 입력하면 근로기준법 평균임금 기준 예상 퇴직금을 계산해드립니다." />
+<link rel="canonical" href="https://everylifeinfo.kr/cal/severance/" />
+<link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo">생활<span>계산기</span></a>
+    <div class="header-right">
+      <nav class="breadcrumb"><a href="/">홈</a> / 퇴직금 계산기</nav>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="site-menu" id="siteMenu">
+    <a class="home-link" href="/">🏠 홈으로</a>
+    <a href="/cal/man-age/">만나이 계산기</a>
+    <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+    <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    <a href="/cal/severance/">퇴직금 계산기</a>
+    <a href="/cal/annual-leave/">연차 계산기</a>
+    <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    <a href="/cal/lotto/">로또번호 생성기</a>
+  </nav>
+</header>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="wrap">
+  <h1><span class="emoji">🏢</span>퇴직금 계산기</h1>
+  <p class="lead">입사일과 퇴사일, 최근 3개월 급여를 입력하면 예상 퇴직금을 계산해드려요.</p>
+
+  <div class="card">
+    <div class="field-row">
+      <div class="field">
+        <label for="hireDate">입사일</label>
+        <input type="date" id="hireDate" />
+      </div>
+      <div class="field">
+        <label for="resignDate">퇴사일</label>
+        <input type="date" id="resignDate" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="recent3m">퇴직 전 3개월간 세전 급여 총액 <span class="hint">(만원)</span></label>
+      <input type="number" id="recent3m" placeholder="예: 1200" min="0" step="1" />
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="bonus">최근 1년 상여금 총액 <span class="hint">(만원, 선택)</span></label>
+        <input type="number" id="bonus" value="0" min="0" step="1" />
+      </div>
+      <div class="field">
+        <label for="annualLeavePay">최근 1년 연차수당 <span class="hint">(만원, 선택)</span></label>
+        <input type="number" id="annualLeavePay" value="0" min="0" step="1" />
+      </div>
+    </div>
+    <button class="btn" id="calcBtn">계산하기</button>
+    <div class="error-msg" id="errorMsg">모든 날짜와 급여를 정확히 입력해주세요.</div>
+
+    <div class="result" id="resultBox">
+      <div class="headline">예상 퇴직금</div>
+      <div class="big-number" id="severanceResult">-</div>
+      <div class="sub-list">
+        <div class="row"><span>재직일수</span><span id="workDaysResult">-</span></div>
+        <div class="row"><span>1일 평균임금</span><span id="avgWageResult">-</span></div>
+        <div class="row"><span>3개월 총 일수</span><span id="periodDaysResult">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain">
+    <h2>퇴직금 계산 방법</h2>
+    <ul>
+      <li>퇴직금 = 1일 평균임금 × 30일 × (재직일수 ÷ 365)</li>
+      <li>1일 평균임금 = (최근 3개월 급여 총액 + 연간 상여금의 3/12 + 연간 연차수당의 3/12) ÷ 최근 3개월 총 일수</li>
+      <li>근로기준법상 <strong>계속근로기간 1년 미만</strong>인 경우 퇴직금 지급 의무가 없습니다.</li>
+    </ul>
+  </div>
+
+  <div class="related">
+    <h2>다른 계산기도 확인해보세요</h2>
+    <div class="related-grid">
+      <a href="/cal/annual-leave/">연차 계산기</a>
+      <a href="/cal/salary/">연봉 실수령액 계산기</a>
+      <a href="/cal/man-age/">만나이 계산기</a>
+      <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    계산 결과는 참고용 추정치이며 실제 지급액과 다를 수 있습니다.
+    <div class="footer-links"><a href="/privacy/">개인정보처리방침</a> · <a href="/about/">사이트 소개</a></div>
+  </footer>
+</main>
+
+<script src="/assets/common.js"></script>
+<script>
+function daysBetween(a, b) {
+  return Math.round((b.getTime() - a.getTime()) / 86400000);
+}
+
+function calcSeverance(hireDate, resignDate, recent3mPay, bonus, annualLeavePay) {
+  const workDays = daysBetween(hireDate, resignDate);
+
+  const periodStart = new Date(resignDate);
+  periodStart.setMonth(periodStart.getMonth() - 3);
+  const periodDays = daysBetween(periodStart, resignDate);
+
+  const totalWage = recent3mPay + (bonus * 3 / 12) + (annualLeavePay * 3 / 12);
+  const avgDailyWage = totalWage / periodDays;
+
+  const severance = avgDailyWage * 30 * (workDays / 365);
+
+  return { workDays, periodDays, avgDailyWage, severance };
+}
+
+function formatWon(n) {
+  return Math.round(n).toLocaleString('ko-KR') + '원';
+}
+
+document.getElementById('calcBtn').addEventListener('click', function () {
+  const hireVal = document.getElementById('hireDate').value;
+  const resignVal = document.getElementById('resignDate').value;
+  const recent3mVal = parseFloat(document.getElementById('recent3m').value);
+  const bonusVal = parseFloat(document.getElementById('bonus').value) || 0;
+  const annualLeaveVal = parseFloat(document.getElementById('annualLeavePay').value) || 0;
+  const errorMsg = document.getElementById('errorMsg');
+  const resultBox = document.getElementById('resultBox');
+
+  if (!hireVal || !resignVal || !recent3mVal || recent3mVal <= 0) {
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+
+  const hireDate = new Date(hireVal + 'T00:00:00');
+  const resignDate = new Date(resignVal + 'T00:00:00');
+
+  if (resignDate <= hireDate) {
+    errorMsg.textContent = '퇴사일은 입사일보다 이후여야 합니다.';
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+  errorMsg.classList.remove('show');
+
+  const r = calcSeverance(hireDate, resignDate, recent3mVal * 10000, bonusVal * 10000, annualLeaveVal * 10000);
+
+  const resultEl = document.getElementById('severanceResult');
+  if (r.workDays < 365) {
+    resultEl.textContent = '지급 대상 아님';
+    document.getElementById('avgWageResult').textContent = formatWon(r.avgDailyWage);
+  } else {
+    resultEl.textContent = formatWon(r.severance);
+    document.getElementById('avgWageResult').textContent = formatWon(r.avgDailyWage);
+  }
+  document.getElementById('workDaysResult').textContent = r.workDays.toLocaleString('ko-KR') + '일';
+  document.getElementById('periodDaysResult').textContent = r.periodDays + '일';
+
+  resultBox.classList.add('show');
+});
+</script>
+
+</body>
+</html>

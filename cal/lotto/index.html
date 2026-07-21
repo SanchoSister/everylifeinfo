@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>로또번호 생성기 - 무료 랜덤 로또번호 추첨</title>
+<meta name="description" content="1부터 45까지 번호 중 6개를 무작위로 뽑아주는 로또번호 생성기입니다. 원하는 세트 수만큼 즉시 생성할 수 있습니다." />
+<link rel="canonical" href="https://everylifeinfo.kr/cal/lotto/" />
+<link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo">생활<span>계산기</span></a>
+    <div class="header-right">
+      <nav class="breadcrumb"><a href="/">홈</a> / 로또번호 생성기</nav>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="site-menu" id="siteMenu">
+    <a class="home-link" href="/">🏠 홈으로</a>
+    <a href="/cal/man-age/">만나이 계산기</a>
+    <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+    <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    <a href="/cal/severance/">퇴직금 계산기</a>
+    <a href="/cal/annual-leave/">연차 계산기</a>
+    <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    <a href="/cal/lotto/">로또번호 생성기</a>
+  </nav>
+</header>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="wrap">
+  <h1><span class="emoji">🎱</span>로또번호 생성기</h1>
+  <p class="lead">1~45 중 6개 번호를 무작위로 뽑아드려요. 재미로만 즐겨주세요!</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="setCount">생성할 세트 수</label>
+      <select id="setCount">
+        <option value="1">1세트</option>
+        <option value="5" selected>5세트</option>
+        <option value="10">10세트</option>
+      </select>
+    </div>
+    <button class="btn" id="genBtn">번호 생성하기</button>
+
+    <div class="result" id="resultBox">
+      <div class="headline">생성된 번호</div>
+      <div id="setsContainer"></div>
+    </div>
+  </div>
+
+  <div class="explain">
+    <h2>안내</h2>
+    <ul>
+      <li>이 서비스는 완전 무작위 생성으로, 당첨을 보장하지 않는 재미용 서비스입니다.</li>
+      <li>실제 로또는 동행복권 공식 웹사이트 또는 판매점에서 구매하세요.</li>
+      <li>과도한 복권 구매는 경제적 부담이 될 수 있습니다. 재미로만 이용해주세요.</li>
+    </ul>
+  </div>
+
+  <div class="related">
+    <h2>다른 계산기도 확인해보세요</h2>
+    <div class="related-grid">
+      <a href="/cal/man-age/">만나이 계산기</a>
+      <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+      <a href="/cal/salary/">연봉 실수령액 계산기</a>
+      <a href="/cal/annual-leave/">연차 계산기</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    본 서비스는 동행복권과 무관한 비공식 재미용 도구입니다.
+    <div class="footer-links"><a href="/privacy/">개인정보처리방침</a> · <a href="/about/">사이트 소개</a></div>
+  </footer>
+</main>
+
+<script src="/assets/common.js"></script>
+<script>
+function ballClass(n) {
+  if (n <= 10) return 'ball-y';
+  if (n <= 20) return 'ball-b';
+  if (n <= 30) return 'ball-r';
+  if (n <= 40) return 'ball-g';
+  return 'ball-p';
+}
+
+function generateSet() {
+  const nums = [];
+  while (nums.length < 6) {
+    const n = Math.floor(Math.random() * 45) + 1;
+    if (!nums.includes(n)) nums.push(n);
+  }
+  return nums.sort((a, b) => a - b);
+}
+
+document.getElementById('genBtn').addEventListener('click', function () {
+  const count = parseInt(document.getElementById('setCount').value, 10);
+  const container = document.getElementById('setsContainer');
+  container.innerHTML = '';
+
+  for (let i = 0; i < count; i++) {
+    const set = generateSet();
+    const row = document.createElement('div');
+    row.className = 'lotto-set';
+    const ballsHtml = set.map(function (n) {
+      return '<div class="ball ' + ballClass(n) + '">' + n + '</div>';
+    }).join('');
+    row.innerHTML = '<div class="ball-row">' + ballsHtml + '</div>';
+    container.appendChild(row);
+  }
+
+  document.getElementById('resultBox').classList.add('show');
+});
+</script>
+
+</body>
+</html>

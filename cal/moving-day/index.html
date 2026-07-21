@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>이사 손없는날 계산기 - 이달의 손없는 날 확인</title>
+<meta name="description" content="원하는 달을 선택하면 음력 기준 손없는 날(이사·개업에 좋은 날)을 요일과 함께 확인할 수 있습니다." />
+<link rel="canonical" href="https://everylifeinfo.kr/cal/moving-day/" />
+<link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo">생활<span>계산기</span></a>
+    <div class="header-right">
+      <nav class="breadcrumb"><a href="/">홈</a> / 이사 손없는날 계산기</nav>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="site-menu" id="siteMenu">
+    <a class="home-link" href="/">🏠 홈으로</a>
+    <a href="/cal/man-age/">만나이 계산기</a>
+    <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+    <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    <a href="/cal/severance/">퇴직금 계산기</a>
+    <a href="/cal/annual-leave/">연차 계산기</a>
+    <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    <a href="/cal/lotto/">로또번호 생성기</a>
+  </nav>
+</header>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="wrap">
+  <h1><span class="emoji">📦</span>이사 손없는날 계산기</h1>
+  <p class="lead">달을 선택하면 그 달의 손없는 날을 모두 알려드려요.</p>
+
+  <div class="card">
+    <div class="field-row">
+      <div class="field">
+        <label for="year">연도</label>
+        <input type="number" id="year" min="1000" max="2050" step="1" />
+      </div>
+      <div class="field">
+        <label for="month">월</label>
+        <select id="month"></select>
+      </div>
+    </div>
+    <button class="btn" id="calcBtn">손없는날 확인하기</button>
+    <div class="error-msg" id="errorMsg">연도와 월을 확인해주세요. (1000~2050년만 지원)</div>
+
+    <div class="result" id="resultBox">
+      <div class="headline" id="resultTitle">손없는 날</div>
+      <table class="day-table" id="dayTable">
+        <thead><tr><th>양력 날짜</th><th>요일</th><th>음력 날짜</th></tr></thead>
+        <tbody id="dayTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="explain">
+    <h2>손없는 날이란?</h2>
+    <ul>
+      <li>'손'은 날마다 동서남북을 옮겨 다니며 사람을 방해한다는 귀신을 뜻하는 민간 속설로, <strong>손 없는 날</strong>은 이 귀신이 활동하지 않는다고 여겨지는 날입니다.</li>
+      <li>음력 날짜의 끝자리가 <strong>9 또는 0</strong>인 날(음력 9·10·19·20·29·30일)이 손없는 날에 해당합니다.</li>
+      <li>이사, 개업, 혼례 등 큰일을 치를 때 이 날을 선호하는 전통이 있습니다. 과학적 근거는 없는 민속 풍습입니다.</li>
+      <li>음력 변환은 근사 계산이며, 정확한 날짜는 만세력을 통해 다시 확인하시길 권장합니다.</li>
+    </ul>
+  </div>
+
+  <div class="related">
+    <h2>다른 계산기도 확인해보세요</h2>
+    <div class="related-grid">
+      <a href="/cal/man-age/">만나이 계산기</a>
+      <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+      <a href="/cal/annual-leave/">연차 계산기</a>
+      <a href="/cal/lotto/">로또번호 생성기</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    계산 결과는 참고용이며 실제 만세력과 하루 정도 차이가 있을 수 있습니다.
+    <div class="footer-links"><a href="/privacy/">개인정보처리방침</a> · <a href="/about/">사이트 소개</a></div>
+  </footer>
+</main>
+
+<script src="/assets/lunar.js"></script>
+<script src="/assets/common.js"></script>
+<script>
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+
+(function initDefaults() {
+  const now = new Date();
+  document.getElementById('year').value = now.getFullYear();
+  const monthSelect = document.getElementById('month');
+  for (let m = 1; m <= 12; m++) {
+    const opt = document.createElement('option');
+    opt.value = m;
+    opt.textContent = m + '월';
+    if (m === now.getMonth() + 1) opt.selected = true;
+    monthSelect.appendChild(opt);
+  }
+})();
+
+function daysInMonth(year, month) {
+  return new Date(year, month, 0).getDate();
+}
+
+function findNoHandDays(year, month) {
+  const total = daysInMonth(year, month);
+  const results = [];
+  for (let d = 1; d <= total; d++) {
+    const lunar = KoreanLunar.solarToLunar(year, month, d);
+    const lastDigit = lunar.day % 10;
+    if (lastDigit === 9 || lastDigit === 0) {
+      const weekday = WEEKDAYS[new Date(year, month - 1, d).getDay()];
+      results.push({ solarDay: d, weekday, lunarMonth: lunar.month, lunarDay: lunar.day, intercalation: lunar.intercalation });
+    }
+  }
+  return results;
+}
+
+document.getElementById('calcBtn').addEventListener('click', function () {
+  const year = parseInt(document.getElementById('year').value, 10);
+  const month = parseInt(document.getElementById('month').value, 10);
+  const errorMsg = document.getElementById('errorMsg');
+  const resultBox = document.getElementById('resultBox');
+
+  if (!year || year < 1000 || year > 2050 || !month) {
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+  errorMsg.classList.remove('show');
+
+  let list;
+  try {
+    list = findNoHandDays(year, month);
+  } catch (e) {
+    errorMsg.textContent = '지원하지 않는 날짜 범위입니다. (1000~2050년만 지원)';
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+
+  document.getElementById('resultTitle').textContent = year + '년 ' + month + '월 손없는 날 (' + list.length + '일)';
+
+  const tbody = document.getElementById('dayTableBody');
+  tbody.innerHTML = '';
+  list.forEach(function (item) {
+    const tr = document.createElement('tr');
+    const isWeekend = item.weekday === '토' || item.weekday === '일';
+    tr.innerHTML =
+      '<td class="hit">' + month + '월 ' + item.solarDay + '일</td>' +
+      '<td' + (isWeekend ? ' style="color:#dc2626;font-weight:700;"' : '') + '>' + item.weekday + '요일</td>' +
+      '<td>음력 ' + item.lunarMonth + (item.intercalation ? '(윤)' : '') + '월 ' + item.lunarDay + '일</td>';
+    tbody.appendChild(tr);
+  });
+
+  resultBox.classList.add('show');
+});
+</script>
+
+</body>
+</html>

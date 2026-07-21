@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>연봉 실수령액 계산기 - 4대보험·소득세 공제 후 월급 계산</title>
+<meta name="description" content="연봉을 입력하면 국민연금, 건강보험, 고용보험, 소득세를 반영한 예상 월 실수령액을 계산해드립니다." />
+<link rel="canonical" href="https://everylifeinfo.kr/cal/salary/" />
+<link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo">생활<span>계산기</span></a>
+    <div class="header-right">
+      <nav class="breadcrumb"><a href="/">홈</a> / 연봉 실수령액 계산기</nav>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="site-menu" id="siteMenu">
+    <a class="home-link" href="/">🏠 홈으로</a>
+    <a href="/cal/man-age/">만나이 계산기</a>
+    <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+    <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    <a href="/cal/severance/">퇴직금 계산기</a>
+    <a href="/cal/annual-leave/">연차 계산기</a>
+    <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    <a href="/cal/lotto/">로또번호 생성기</a>
+  </nav>
+</header>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="wrap">
+  <h1><span class="emoji">💰</span>연봉 실수령액 계산기</h1>
+  <p class="lead">연봉을 입력하면 4대보험료와 소득세를 뺀 예상 실수령액을 계산해드려요.</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="salary">연봉 (세전, 만원)</label>
+      <input type="number" id="salary" placeholder="예: 4000" min="0" step="1" />
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="nonTaxable">월 비과세액 <span class="hint">(만원)</span></label>
+        <input type="number" id="nonTaxable" value="20" min="0" step="1" />
+      </div>
+      <div class="field">
+        <label for="dependents">부양가족 수 <span class="hint">(본인포함)</span></label>
+        <input type="number" id="dependents" value="1" min="1" step="1" />
+      </div>
+    </div>
+    <button class="btn" id="calcBtn">계산하기</button>
+    <div class="error-msg" id="errorMsg">연봉을 입력해주세요.</div>
+
+    <div class="result" id="resultBox">
+      <div class="headline">예상 월 실수령액</div>
+      <div class="big-number" id="monthlyNetResult">-</div>
+      <div class="sub-list">
+        <div class="row"><span>연간 실수령액</span><span id="annualNetResult">-</span></div>
+        <div class="row"><span>국민연금</span><span id="pensionResult">-</span></div>
+        <div class="row"><span>건강보험(+장기요양)</span><span id="healthResult">-</span></div>
+        <div class="row"><span>고용보험</span><span id="employmentResult">-</span></div>
+        <div class="row"><span>소득세+지방소득세</span><span id="taxResult">-</span></div>
+        <div class="row"><span>공제 합계</span><span id="totalDeductionResult">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain">
+    <h2>계산 기준 안내</h2>
+    <ul>
+      <li>4대보험 요율: 국민연금 4.5%, 건강보험 3.545%(+장기요양 12.95%), 고용보험 0.9% (근로자 부담분 기준)</li>
+      <li>소득세는 근로소득공제·인적공제·근로소득세액공제를 적용한 종합소득세율표 기준 추정치입니다.</li>
+      <li>자녀세액공제, 연금저축 등 개별 공제 항목은 반영되지 않아 실제 원천징수액과 차이가 있을 수 있습니다.</li>
+      <li>정확한 금액은 국세청 홈택스 '근로소득 간이세액표'를 참고하세요.</li>
+    </ul>
+  </div>
+
+  <div class="related">
+    <h2>다른 계산기도 확인해보세요</h2>
+    <div class="related-grid">
+      <a href="/cal/severance/">퇴직금 계산기</a>
+      <a href="/cal/annual-leave/">연차 계산기</a>
+      <a href="/cal/man-age/">만나이 계산기</a>
+      <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    계산 결과는 참고용 추정치이며 실제 급여명세서와 다를 수 있습니다.
+    <div class="footer-links"><a href="/privacy/">개인정보처리방침</a> · <a href="/about/">사이트 소개</a></div>
+  </footer>
+</main>
+
+<script src="/assets/common.js"></script>
+<script>
+function earnedIncomeDeduction(salary) {
+  if (salary <= 5000000) return salary * 0.7;
+  if (salary <= 15000000) return 3500000 + (salary - 5000000) * 0.4;
+  if (salary <= 45000000) return 7500000 + (salary - 15000000) * 0.15;
+  if (salary <= 100000000) return 12000000 + (salary - 45000000) * 0.05;
+  return 14750000 + (salary - 100000000) * 0.02;
+}
+
+function incomeTaxByBracket(base) {
+  const brackets = [
+    [14000000, 0.06, 0],
+    [50000000, 0.15, 1260000],
+    [88000000, 0.24, 5760000],
+    [150000000, 0.35, 15440000],
+    [300000000, 0.38, 19940000],
+    [500000000, 0.40, 25940000],
+    [1000000000, 0.42, 35940000],
+    [Infinity, 0.45, 65940000],
+  ];
+  for (const [limit, rate, deduction] of brackets) {
+    if (base <= limit) return Math.max(base * rate - deduction, 0);
+  }
+}
+
+function taxCreditLimit(salary) {
+  if (salary <= 33000000) return 740000;
+  if (salary <= 70000000) return Math.max(740000 - (salary - 33000000) * 0.008, 660000);
+  if (salary <= 120000000) return Math.max(660000 - (salary - 70000000) * 0.5, 500000);
+  return Math.max(500000 - (salary - 120000000) * 0.5, 200000);
+}
+
+function calcSalary(annualSalary, nonTaxableMonthly, dependents) {
+  const monthlyGross = annualSalary / 12;
+  const taxableMonthly = Math.max(monthlyGross - nonTaxableMonthly, 0);
+
+  const pensionBase = Math.min(Math.max(taxableMonthly, 370000), 6370000);
+  const pension = Math.round(pensionBase * 0.045);
+
+  const health = Math.round(taxableMonthly * 0.03545);
+  const longTermCare = Math.round(health * 0.1295);
+  const employment = Math.round(taxableMonthly * 0.009);
+
+  const insuranceMonthly = pension + health + longTermCare + employment;
+  const annualTaxable = taxableMonthly * 12;
+
+  const earnedIncomeAmount = annualTaxable - earnedIncomeDeduction(annualTaxable);
+  const personalDeduction = dependents * 1500000;
+  const annualInsurance = insuranceMonthly * 12;
+
+  const taxBase = Math.max(earnedIncomeAmount - personalDeduction - annualInsurance, 0);
+  const calculatedTax = incomeTaxByBracket(taxBase);
+
+  let taxCredit = calculatedTax <= 500000
+    ? calculatedTax * 0.55
+    : 275000 + (calculatedTax - 500000) * 0.3;
+  taxCredit = Math.min(taxCredit, taxCreditLimit(annualTaxable));
+
+  const decidedTax = Math.max(calculatedTax - taxCredit, 0);
+  const localTax = Math.round(decidedTax * 0.1);
+  const annualTaxTotal = decidedTax + localTax;
+  const monthlyTax = annualTaxTotal / 12;
+
+  const monthlyNet = monthlyGross - insuranceMonthly - monthlyTax;
+
+  return {
+    monthlyGross,
+    monthlyNet,
+    annualNet: monthlyNet * 12,
+    pension,
+    health: health + longTermCare,
+    employment,
+    monthlyTax,
+    totalDeduction: insuranceMonthly + monthlyTax,
+  };
+}
+
+function formatWon(n) {
+  return Math.round(n).toLocaleString('ko-KR') + '원';
+}
+
+document.getElementById('calcBtn').addEventListener('click', function () {
+  const salaryVal = parseFloat(document.getElementById('salary').value);
+  const nonTaxableVal = parseFloat(document.getElementById('nonTaxable').value) || 0;
+  const dependentsVal = parseInt(document.getElementById('dependents').value, 10) || 1;
+  const errorMsg = document.getElementById('errorMsg');
+  const resultBox = document.getElementById('resultBox');
+
+  if (!salaryVal || salaryVal <= 0) {
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+  errorMsg.classList.remove('show');
+
+  const r = calcSalary(salaryVal * 10000, nonTaxableVal * 10000, dependentsVal);
+
+  document.getElementById('monthlyNetResult').textContent = formatWon(r.monthlyNet);
+  document.getElementById('annualNetResult').textContent = formatWon(r.annualNet);
+  document.getElementById('pensionResult').textContent = formatWon(r.pension);
+  document.getElementById('healthResult').textContent = formatWon(r.health);
+  document.getElementById('employmentResult').textContent = formatWon(r.employment);
+  document.getElementById('taxResult').textContent = formatWon(r.monthlyTax);
+  document.getElementById('totalDeductionResult').textContent = formatWon(r.totalDeduction);
+
+  resultBox.classList.add('show');
+});
+</script>
+
+</body>
+</html>

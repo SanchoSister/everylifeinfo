@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>초등학교 입학연도 계산기 - 우리 아이 취학 연도 확인</title>
+<meta name="description" content="생년월일을 입력하면 초중등교육법 시행령 기준으로 초등학교 입학 연도와 입학 시 만 나이를 계산해드립니다." />
+<link rel="canonical" href="https://everylifeinfo.kr/cal/school-age/" />
+<link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo">생활<span>계산기</span></a>
+    <div class="header-right">
+      <nav class="breadcrumb"><a href="/">홈</a> / 초등학교 입학연도 계산기</nav>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="site-menu" id="siteMenu">
+    <a class="home-link" href="/">🏠 홈으로</a>
+    <a href="/cal/man-age/">만나이 계산기</a>
+    <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+    <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    <a href="/cal/severance/">퇴직금 계산기</a>
+    <a href="/cal/annual-leave/">연차 계산기</a>
+    <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    <a href="/cal/lotto/">로또번호 생성기</a>
+  </nav>
+</header>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="wrap">
+  <h1><span class="emoji">🎒</span>초등학교 입학연도 계산기</h1>
+  <p class="lead">자녀의 생년월일을 입력하면 초등학교 입학 연도를 계산해드려요.</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="birth">자녀 생년월일</label>
+      <input type="date" id="birth" min="2010-01-01" max="2030-12-31" />
+    </div>
+    <button class="btn" id="calcBtn">계산하기</button>
+    <div class="error-msg" id="errorMsg">생년월일을 입력해주세요.</div>
+
+    <div class="result" id="resultBox">
+      <div class="headline">초등학교 입학 연도</div>
+      <div class="big-number" id="entryYearResult">-</div>
+      <div class="sub-list">
+        <div class="row"><span>입학 시기</span><span id="entryDateResult">-</span></div>
+        <div class="row"><span>입학 당시 만 나이</span><span id="entryAgeResult">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain">
+    <h2>초등학교 입학 기준</h2>
+    <ul>
+      <li>초중등교육법 시행령에 따라 <strong>3월 1일 기준 만 6세</strong>가 된 어린이가 그 해 3월 초등학교에 입학합니다.</li>
+      <li>즉, <strong>전년도 3월 2일 ~ 해당연도 3월 1일 출생자</strong>가 같은 학년으로 입학 대상이 됩니다.</li>
+      <li>예: 2019년 3월 2일 ~ 2020년 3월 1일 출생자는 2026년 3월에 입학합니다.</li>
+    </ul>
+  </div>
+
+  <div class="related">
+    <h2>다른 계산기도 확인해보세요</h2>
+    <div class="related-grid">
+      <a href="/cal/man-age/">만나이 계산기</a>
+      <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+      <a href="/cal/annual-leave/">연차 계산기</a>
+      <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    계산 결과는 참고용이며 실제 취학 통지는 거주지 관할 교육청 안내를 따릅니다.
+    <div class="footer-links"><a href="/privacy/">개인정보처리방침</a> · <a href="/about/">사이트 소개</a></div>
+  </footer>
+</main>
+
+<script src="/assets/common.js"></script>
+<script>
+function calcEntryYear(birth) {
+  const y = birth.getFullYear();
+  const m = birth.getMonth() + 1; // 1-12
+  const d = birth.getDate();
+
+  // 3/2 이후 출생 -> +7, 1/1~3/1 출생 -> +6
+  const isBeforeMar2 = m < 3 || (m === 3 && d === 1);
+  const entryYear = isBeforeMar2 ? y + 6 : y + 7;
+  return entryYear;
+}
+
+document.getElementById('calcBtn').addEventListener('click', function () {
+  const birthVal = document.getElementById('birth').value;
+  const errorMsg = document.getElementById('errorMsg');
+  const resultBox = document.getElementById('resultBox');
+
+  if (!birthVal) {
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+  errorMsg.classList.remove('show');
+
+  const birth = new Date(birthVal + 'T00:00:00');
+  const entryYear = calcEntryYear(birth);
+
+  const entryDate = new Date(entryYear, 2, 1); // 3월 (index 2)
+  let entryAge = entryYear - birth.getFullYear();
+  const hadBirthday =
+    entryDate.getMonth() > birth.getMonth() ||
+    (entryDate.getMonth() === birth.getMonth() && entryDate.getDate() >= birth.getDate());
+  if (!hadBirthday) entryAge -= 1;
+
+  document.getElementById('entryYearResult').textContent = entryYear + '년';
+  document.getElementById('entryDateResult').textContent = entryYear + '년 3월';
+  document.getElementById('entryAgeResult').textContent = '만 ' + entryAge + '세';
+
+  resultBox.classList.add('show');
+});
+</script>
+
+</body>
+</html>
