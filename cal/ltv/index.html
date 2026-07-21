@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LTV 계산기 - 주택담보대출비율 바로 확인</title>
+<meta name="description" content="주택가격과 대출희망금액을 입력하면 LTV(주택담보대출비율)를 계산해드립니다. 규제지역·비규제지역 한도 참고표도 함께 제공합니다." />
+<link rel="canonical" href="https://everylifeinfo.kr/cal/ltv/" />
+<link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo">생활<span>계산기</span></a>
+    <div class="header-right">
+      <nav class="breadcrumb"><a href="/">홈</a> / LTV 계산기</nav>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="site-menu" id="siteMenu">
+    <a class="home-link" href="/">🏠 홈으로</a>
+    <a href="/cal/man-age/">만나이 계산기</a>
+    <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+    <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    <a href="/cal/severance/">퇴직금 계산기</a>
+    <a href="/cal/annual-leave/">연차 계산기</a>
+    <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    <a href="/cal/lotto/">로또번호 생성기</a>
+    <a href="/cal/lotto-tax/">로또 당첨금 세금 계산기</a>
+    <a href="/cal/dday/">D-day 계산기</a>
+    <a href="/cal/dsr/">DSR 계산기</a>
+    <a href="/cal/ltv/">LTV 계산기</a>
+  </nav>
+</header>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="wrap">
+  <h1><span class="emoji">🏠</span>LTV 계산기</h1>
+  <p class="lead">주택가격과 대출희망금액을 입력하면 LTV(주택담보대출비율)를 계산해드려요.</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="housePrice">주택가격 <span class="hint">(원)</span></label>
+      <input type="number" id="housePrice" placeholder="예: 900000000" min="0" step="1000000" />
+    </div>
+    <div class="field">
+      <label for="loanAmount">대출 희망금액 <span class="hint">(원)</span></label>
+      <input type="number" id="loanAmount" placeholder="예: 360000000" min="0" step="1000000" />
+    </div>
+    <button class="btn" id="calcBtn">계산하기</button>
+    <div class="error-msg" id="errorMsg">주택가격과 대출 희망금액을 입력해주세요.</div>
+
+    <div class="result" id="resultBox">
+      <div class="headline">LTV</div>
+      <div class="big-number" id="ltvResult">-</div>
+      <div class="sub-list">
+        <div class="row"><span>주택가격 대비 자기자금 필요액</span><span id="equityResult">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>2026년 2월 발표 기준 참고 한도</strong> — 규제지역(투기과열지구·조정대상지역)은 무주택자·처분조건부 1주택자
+    기준 LTV 40%, 비규제지역은 최대 70%가 일반적인 한도입니다. 여기에 더해 수도권·규제지역은 주택가격 구간별로
+    대출한도 자체가 <strong>15억원 이하 6억원, 15억~25억원 4억원, 25억원 초과 2억원</strong>으로 정액 제한됩니다.
+    규제지역 지정 현황은 수시로 바뀌니 대출 상담 전 <a href="https://www.molit.go.kr/policy/stable/sta_b_03.jsp" target="_blank" rel="noopener">국토교통부 지정 현황</a>에서
+    반드시 다시 확인하세요.
+  </div>
+
+  <div class="explain">
+    <h2>LTV 계산 방법</h2>
+    <ul>
+      <li>LTV(주택담보대출비율) = 대출금액 ÷ 주택가격 × 100</li>
+      <li>실제 받을 수 있는 대출한도는 LTV 비율 한도와, 위 참고표의 가격구간별 정액 한도 중 <strong>더 낮은 금액</strong>이 적용됩니다.</li>
+      <li>무주택/1주택/다주택 여부, 생애최초 구매 여부에 따라 우대 한도가 별도로 적용될 수 있습니다.</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <ul>
+      <li><strong>생애최초 주택구입자는 LTV가 더 나오나요?</strong> 네, 지역·가격과 무관하게 생애최초 구입자에게는 우대 LTV가 적용되는 경우가 많습니다. 은행 상담 시 생애최초 여부를 꼭 알려주세요.</li>
+      <li><strong>LTV, DTI, DSR은 뭐가 다른가요?</strong> LTV는 주택가격 대비 대출액 비율, DTI는 소득 대비 주담대 원리금+기타대출 이자 비율, DSR은 소득 대비 모든 대출의 원리금 상환액 비율입니다. 최근에는 DSR이 가장 강하게 적용되는 규제입니다. <a href="/cal/dsr/">DSR 계산기</a>도 함께 확인해보세요.</li>
+      <li><strong>전세자금대출에도 LTV가 적용되나요?</strong> LTV는 주택담보대출 개념이라 전세대출과는 별도 기준(전세보증금 대비 비율 등)이 적용됩니다.</li>
+    </ul>
+  </div>
+
+  <div class="related">
+    <h2>다른 계산기도 확인해보세요</h2>
+    <div class="related-grid">
+      <a href="/cal/dsr/">DSR 계산기</a>
+      <a href="/cal/salary/">연봉 실수령액 계산기</a>
+      <a href="/cal/severance/">퇴직금 계산기</a>
+      <a href="/cal/dday/">D-day 계산기</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-links"><a href="/privacy/">개인정보처리방침</a> · <a href="/about/">사이트 소개</a></div>
+  </footer>
+</main>
+
+<script src="/assets/common.js"></script>
+<script>
+function formatWon(n) {
+  return Math.round(n).toLocaleString('ko-KR') + '원';
+}
+
+document.getElementById('calcBtn').addEventListener('click', function () {
+  const housePrice = parseFloat(document.getElementById('housePrice').value);
+  const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+  const errorMsg = document.getElementById('errorMsg');
+  const resultBox = document.getElementById('resultBox');
+
+  if (!housePrice || !loanAmount || housePrice <= 0 || loanAmount < 0) {
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+  errorMsg.classList.remove('show');
+
+  const ltv = loanAmount / housePrice * 100;
+  const equity = housePrice - loanAmount;
+
+  document.getElementById('ltvResult').textContent = ltv.toFixed(1) + '%';
+  document.getElementById('equityResult').textContent = formatWon(equity);
+
+  resultBox.classList.add('show');
+});
+</script>
+
+</body>
+</html>

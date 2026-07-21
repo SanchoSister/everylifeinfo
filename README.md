@@ -1,6 +1,6 @@
 # 생활계산기 모음 (calc-hub)
 
-만나이, 연봉 실수령액, 퇴직금, 연차, 초등학교 입학연도, 이사 손없는날, 로또번호 생성기, 로또 당첨금 세금, D-day까지
+만나이, 연봉 실수령액, 퇴직금, 연차, 초등학교 입학연도, 이사 손없는날, 로또번호 생성기, 로또 당첨금 세금, D-day, DSR, LTV까지
 한 도메인 아래 `/cal/<slug>/` 경로로 묶은 순수 정적 HTML/CSS/JS 사이트입니다.
 빌드 도구, 프레임워크, 서버 없이 그대로 배포할 수 있습니다.
 
@@ -25,6 +25,8 @@ calc-hub/
     lotto/index.html         로또번호 생성기
     lotto-tax/index.html     로또 당첨금 세금 계산기
     dday/index.html          D-day 계산기
+    dsr/index.html           DSR 계산기
+    ltv/index.html           LTV 계산기
   privacy/index.html         개인정보처리방침
   about/index.html           사이트 소개
   THIRD_PARTY_LICENSES.md    lunar.js 출처 및 MIT 라이선스 고지
