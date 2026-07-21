@@ -1,6 +1,6 @@
 # 생활계산기 모음 (calc-hub)
 
-만나이, 연봉 실수령액, 퇴직금, 연차, 초등학교 입학연도, 이사 손없는날, 로또번호 생성기까지
+만나이, 연봉 실수령액, 퇴직금, 연차, 초등학교 입학연도, 이사 손없는날, 로또번호 생성기, 로또 당첨금 세금, D-day까지
 한 도메인 아래 `/cal/<slug>/` 경로로 묶은 순수 정적 HTML/CSS/JS 사이트입니다.
 빌드 도구, 프레임워크, 서버 없이 그대로 배포할 수 있습니다.
 
@@ -23,6 +23,8 @@ calc-hub/
     annual-leave/index.html  연차 계산기
     moving-day/index.html    이사 손없는날 계산기
     lotto/index.html         로또번호 생성기
+    lotto-tax/index.html     로또 당첨금 세금 계산기
+    dday/index.html          D-day 계산기
   privacy/index.html         개인정보처리방침
   about/index.html           사이트 소개
   THIRD_PARTY_LICENSES.md    lunar.js 출처 및 MIT 라이선스 고지
@@ -60,7 +62,7 @@ python3 -m http.server 8000
 
 현재 페이지에는 광고 placeholder를 두지 않았습니다 (심사 중 빈 광고 박스가 보이면 불리할 수 있어 제거함). 승인 전까지는 이대로 두고, 승인 후에만 아래 순서로 추가하세요.
 
-1. 사이트를 실제 도메인에 배포하고, 콘텐츠가 충분히 쌓인 뒤(계산기 7개 + 설명 텍스트 정도면 심사 시도 가능) [Google AdSense](https://adsense.google.com)에 사이트 등록 후 심사를 신청하세요.
+1. 사이트를 실제 도메인에 배포하고, 콘텐츠가 충분히 쌓인 뒤(계산기 9개 + 설명/FAQ 텍스트 정도면 심사 시도 가능) [Google AdSense](https://adsense.google.com)에 사이트 등록 후 심사를 신청하세요.
 2. 승인되면 발급받은 스니펫을 **모든 페이지의 `<head>` 안, `</head>` 직전**에 추가합니다 (8개 HTML 파일 전부 동일하게):
    ```html
    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>

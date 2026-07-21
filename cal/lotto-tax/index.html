@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>로또 당첨금 세금 계산기 - 실수령액 바로 확인</title>
+<meta name="description" content="로또 등 복권 당첨금을 입력하면 세금을 제외한 실수령액을 계산해드립니다. 5만원 이하 비과세, 3억원 기준 22%·33% 분리과세 기준 적용." />
+<link rel="canonical" href="https://everylifeinfo.kr/cal/lotto-tax/" />
+<link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo">생활<span>계산기</span></a>
+    <div class="header-right">
+      <nav class="breadcrumb"><a href="/">홈</a> / 로또 당첨금 세금 계산기</nav>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="site-menu" id="siteMenu">
+    <a class="home-link" href="/">🏠 홈으로</a>
+    <a href="/cal/man-age/">만나이 계산기</a>
+    <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+    <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    <a href="/cal/severance/">퇴직금 계산기</a>
+    <a href="/cal/annual-leave/">연차 계산기</a>
+    <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    <a href="/cal/lotto/">로또번호 생성기</a>
+    <a href="/cal/lotto-tax/">로또 당첨금 세금 계산기</a>
+    <a href="/cal/dday/">D-day 계산기</a>
+  </nav>
+</header>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="wrap">
+  <h1><span class="emoji">🧾</span>로또 당첨금 세금 계산기</h1>
+  <p class="lead">당첨금을 입력하면 세금 떼고 실제로 받는 금액을 계산해드려요.</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="amount">당첨금 <span class="hint">(원)</span></label>
+      <input type="number" id="amount" placeholder="예: 1500000000" min="0" step="1000" />
+    </div>
+    <button class="btn" id="calcBtn">계산하기</button>
+    <div class="error-msg" id="errorMsg">당첨금을 입력해주세요.</div>
+
+    <div class="result" id="resultBox">
+      <div class="headline">세후 실수령액</div>
+      <div class="big-number" id="netResult">-</div>
+      <div class="sub-list">
+        <div class="row"><span>기타소득세</span><span id="incomeTaxResult">-</span></div>
+        <div class="row"><span>지방소득세</span><span id="localTaxResult">-</span></div>
+        <div class="row"><span>세금 합계</span><span id="totalTaxResult">-</span></div>
+        <div class="row"><span>실효세율</span><span id="rateResult">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain">
+    <h2>로또 당첨금 세금 기준</h2>
+    <ul>
+      <li><strong>5만원 이하</strong>: 비과세 (세금 없음, 전액 수령)</li>
+      <li><strong>5만원 초과 ~ 3억원 이하</strong>: 기타소득세 20% + 지방소득세 2% = 총 22%</li>
+      <li><strong>3억원 초과분</strong>: 초과하는 금액에 대해 기타소득세 30% + 지방소득세 3% = 총 33% (3억원까지는 22% 그대로 적용)</li>
+      <li>당첨금이 5만원을 넘으면 5만원까지도 과세 대상에 포함되어 전액 기준으로 세금이 계산됩니다.</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <ul>
+      <li><strong>세금은 누가 언제 떼나요?</strong> 당첨금 수령 시 동행복권에서 원천징수하고 남은 금액을 지급합니다. 별도로 신고할 필요는 없습니다.</li>
+      <li><strong>1등 당첨되면 실수령액은 대략 얼마인가요?</strong> 1등 당첨금이 회차마다 달라 정확한 금액은 다르지만, 3억원을 넘는 부분부터는 33% 세율이 적용되어 대략 당첨금의 67~78% 정도를 실수령하게 됩니다. 위 계산기에 직접 금액을 넣어 확인해보세요.</li>
+      <li><strong>연금복권도 같은 세율인가요?</strong> 네, 복권 당첨금은 종류와 관계없이 동일한 기타소득세 기준이 적용됩니다.</li>
+    </ul>
+  </div>
+
+  <div class="related">
+    <h2>다른 계산기도 확인해보세요</h2>
+    <div class="related-grid">
+      <a href="/cal/lotto/">로또번호 생성기</a>
+      <a href="/cal/salary/">연봉 실수령액 계산기</a>
+      <a href="/cal/severance/">퇴직금 계산기</a>
+      <a href="/cal/dday/">D-day 계산기</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-links"><a href="/privacy/">개인정보처리방침</a> · <a href="/about/">사이트 소개</a></div>
+  </footer>
+</main>
+
+<script src="/assets/common.js"></script>
+<script>
+function calcLottoTax(amount) {
+  if (amount <= 50000) {
+    return { incomeTax: 0, localTax: 0, totalTax: 0, net: amount };
+  }
+  const under3 = Math.min(amount, 300000000);
+  const over3 = Math.max(amount - 300000000, 0);
+
+  const incomeTax = Math.round(under3 * 0.20 + over3 * 0.30);
+  const localTax = Math.round(under3 * 0.02 + over3 * 0.03);
+  const totalTax = incomeTax + localTax;
+  const net = amount - totalTax;
+
+  return { incomeTax, localTax, totalTax, net };
+}
+
+function formatWon(n) {
+  return Math.round(n).toLocaleString('ko-KR') + '원';
+}
+
+document.getElementById('calcBtn').addEventListener('click', function () {
+  const amountVal = parseFloat(document.getElementById('amount').value);
+  const errorMsg = document.getElementById('errorMsg');
+  const resultBox = document.getElementById('resultBox');
+
+  if (!amountVal || amountVal <= 0) {
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+  errorMsg.classList.remove('show');
+
+  const r = calcLottoTax(amountVal);
+  const rate = amountVal > 0 ? (r.totalTax / amountVal * 100) : 0;
+
+  document.getElementById('netResult').textContent = formatWon(r.net);
+  document.getElementById('incomeTaxResult').textContent = formatWon(r.incomeTax);
+  document.getElementById('localTaxResult').textContent = formatWon(r.localTax);
+  document.getElementById('totalTaxResult').textContent = formatWon(r.totalTax);
+  document.getElementById('rateResult').textContent = rate.toFixed(1) + '%';
+
+  resultBox.classList.add('show');
+});
+</script>
+
+</body>
+</html>
