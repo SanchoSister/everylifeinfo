@@ -28,7 +28,9 @@ calc-hub/
     dsr/index.html           DSR 계산기
     ltv/index.html           LTV 계산기
   privacy/index.html         개인정보처리방침
+  terms/index.html           이용약관
   about/index.html           사이트 소개
+  contact/index.html         문의하기
   THIRD_PARTY_LICENSES.md    lunar.js 출처 및 MIT 라이선스 고지
 ```
 
