@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BMI 계산기 - 체질량지수·표준체중 바로 확인</title>
+<meta name="description" content="키와 몸무게를 입력하면 BMI(체질량지수)와 비만도 판정, 성별 기준 표준체중을 계산해드립니다. 대한비만학회 기준 적용." />
+<link rel="canonical" href="https://everylifeinfo.kr/cal/bmi/" />
+<link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo">생활<span>계산기</span></a>
+    <div class="header-right">
+      <nav class="breadcrumb"><a href="/">홈</a> / BMI 계산기</nav>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="site-menu" id="siteMenu">
+    <a class="home-link" href="/">🏠 홈으로</a>
+    <a href="/cal/man-age/">만나이 계산기</a>
+    <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+    <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    <a href="/cal/severance/">퇴직금 계산기</a>
+    <a href="/cal/annual-leave/">연차 계산기</a>
+    <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    <a href="/cal/lotto/">로또번호 생성기</a>
+    <a href="/cal/lotto-tax/">로또 당첨금 세금 계산기</a>
+    <a href="/cal/dday/">D-day 계산기</a>
+    <a href="/cal/dsr/">DSR 계산기</a>
+    <a href="/cal/ltv/">LTV 계산기</a>
+    <a href="/cal/bmi/">BMI 계산기</a>
+    <a href="/cal/bmr/">기초대사량 계산기</a>
+  </nav>
+</header>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="wrap">
+  <h1><span class="emoji">⚖️</span>BMI 계산기</h1>
+  <p class="lead">키와 몸무게를 입력하면 BMI(체질량지수)와 비만도 판정, 표준체중을 계산해드려요.</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="gender">성별</label>
+      <select id="gender">
+        <option value="male">남성</option>
+        <option value="female">여성</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="height">키 <span class="hint">(cm)</span></label>
+        <input type="number" id="height" placeholder="예: 170" min="100" max="250" step="0.1" />
+      </div>
+      <div class="field">
+        <label for="weight">몸무게 <span class="hint">(kg)</span></label>
+        <input type="number" id="weight" placeholder="예: 65" min="20" max="300" step="0.1" />
+      </div>
+    </div>
+    <button class="btn" id="calcBtn">계산하기</button>
+    <div class="error-msg" id="errorMsg">키와 몸무게를 입력해주세요.</div>
+
+    <div class="result" id="resultBox">
+      <div class="headline">BMI 지수</div>
+      <div class="big-number" id="bmiResult">-</div>
+      <div class="sub-list">
+        <div class="row"><span>비만도 판정</span><span id="categoryResult">-</span></div>
+        <div class="row"><span>표준체중</span><span id="stdWeightResult">-</span></div>
+        <div class="row"><span>표준체중과의 차이</span><span id="diffResult">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain">
+    <h2>BMI 계산 방법</h2>
+    <ul>
+      <li>BMI(체질량지수) = 몸무게(kg) ÷ 키(m)²</li>
+      <li>표준체중(kg) = 키(m)² × 22(남성) 또는 × 21(여성). 이는 BMI 22(남)·21(여)를 기준으로 한 값으로, 병원·보건소에서 널리 쓰이는 공식입니다.</li>
+      <li>비만도 판정은 대한비만학회(2020년 진료지침, 2026년 학술대회에서 기준 유지 확인)의 아시아·태평양 기준을 따릅니다.</li>
+    </ul>
+
+    <h2>비만도 판정 기준표</h2>
+    <ul>
+      <li><strong>저체중</strong>: BMI 18.5 미만</li>
+      <li><strong>정상체중</strong>: BMI 18.5 이상 ~ 23 미만</li>
+      <li><strong>비만전단계(과체중)</strong>: BMI 23 이상 ~ 25 미만</li>
+      <li><strong>1단계 비만</strong>: BMI 25 이상 ~ 30 미만</li>
+      <li><strong>2단계 비만</strong>: BMI 30 이상 ~ 35 미만</li>
+      <li><strong>3단계 비만(고도비만)</strong>: BMI 35 이상</li>
+    </ul>
+
+    <h2>계산 예시</h2>
+    <ul>
+      <li>키 170cm, 몸무게 65kg 남성: BMI = 65 ÷ 1.7² = <strong>22.5</strong>로 정상체중 구간이며, 표준체중은 1.7² × 22 = <strong>63.6kg</strong>이라 표준체중보다 약 1.4kg 무거운 수준입니다.</li>
+      <li>키 160cm, 몸무게 48kg 여성: BMI = 48 ÷ 1.6² = <strong>18.7</strong>로 저체중과 정상체중의 경계에 가까우며, 표준체중은 1.6² × 21 = <strong>53.8kg</strong>로 표준체중보다 약 5.8kg 가벼운 수준입니다.</li>
+    </ul>
+
+    <h2>서양 기준과 다른 이유</h2>
+    <ul>
+      <li>WHO(세계보건기구)의 서구권 기준은 정상체중을 BMI 18.5~25, 과체중을 25~30으로 좀 더 느슨하게 봅니다. 반면 한국을 포함한 아시아권은 같은 BMI라도 체지방률과 대사질환(당뇨·고혈압 등) 위험이 서구인보다 높게 나타난다는 연구에 따라, 대한비만학회는 더 엄격한 기준(정상 23 미만, 비만 25 이상)을 적용하고 있습니다.</li>
+      <li>이 때문에 해외 BMI 계산기 결과와 비교하면 같은 체형이라도 한국 기준에서 한 단계 더 높은 비만도로 판정될 수 있습니다.</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <ul>
+      <li><strong>BMI가 정상이면 건강한 건가요?</strong> BMI는 근육량과 체지방을 구분하지 못하는 한계가 있습니다. 근육량이 많은 사람은 BMI가 높게 나와도 체지방률은 정상일 수 있고, 반대로 마른 비만(정상체중 비만)도 존재합니다. 체성분 분석과 함께 참고하는 것이 정확합니다.</li>
+      <li><strong>표준체중이 꼭 목표체중이어야 하나요?</strong> 아니요, 표준체중은 통계적 평균 기준일 뿐 개인의 체형·근육량·건강 목표에 따라 적정 체중은 다를 수 있습니다.</li>
+      <li><strong>성장기 어린이·청소년도 이 기준을 적용할 수 있나요?</strong> 아니요, 이 계산기는 성인 기준입니다. 소아·청소년은 나이·성별별 백분위수 기준의 별도 성장도표를 사용해야 합니다.</li>
+      <li><strong>임산부도 이 계산기를 써도 되나요?</strong> 임신 중에는 체중 증가가 정상적인 생리 현상이라 일반 BMI 기준을 그대로 적용하기 어렵습니다. 산부인과에서 임신 전 BMI 기준의 별도 권장 체중 증가 범위를 안내받는 것이 정확합니다.</li>
+      <li><strong>2026년 6월에 비만 기준이 25에서 27로 바뀐다는 얘기가 있던데요?</strong> 대한비만학회는 2026년 6월 학술대회에서 이러한 조정안에 대한 논의가 있었지만, 결과적으로 기존 BMI 25 기준을 유지하기로 정리했습니다.</li>
+    </ul>
+  </div>
+
+  <div class="related">
+    <h2>다른 계산기도 확인해보세요</h2>
+    <div class="related-grid">
+      <a href="/cal/bmr/">기초대사량 계산기</a>
+      <a href="/cal/man-age/">만나이 계산기</a>
+      <a href="/cal/dday/">D-day 계산기</a>
+      <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    본 계산 결과는 참고용이며 의학적 진단을 대신하지 않습니다. 정확한 건강 상태는 병원·보건소에서 확인하세요.
+    <div class="footer-links"><a href="/privacy/">개인정보처리방침</a> · <a href="/terms/">이용약관</a> · <a href="/about/">사이트 소개</a> · <a href="/contact/">문의</a></div>
+  </footer>
+</main>
+
+<script src="/assets/common.js"></script>
+<script>
+function calcBmi(weightKg, heightCm, gender) {
+  const heightM = heightCm / 100;
+  const bmi = weightKg / (heightM * heightM);
+  const stdWeight = gender === 'male' ? heightM * heightM * 22 : heightM * heightM * 21;
+
+  let category;
+  if (bmi < 18.5) category = '저체중';
+  else if (bmi < 23) category = '정상체중';
+  else if (bmi < 25) category = '비만전단계(과체중)';
+  else if (bmi < 30) category = '1단계 비만';
+  else if (bmi < 35) category = '2단계 비만';
+  else category = '3단계 비만(고도비만)';
+
+  return { bmi, stdWeight, category };
+}
+
+document.getElementById('calcBtn').addEventListener('click', function () {
+  const gender = document.getElementById('gender').value;
+  const height = parseFloat(document.getElementById('height').value);
+  const weight = parseFloat(document.getElementById('weight').value);
+  const errorMsg = document.getElementById('errorMsg');
+  const resultBox = document.getElementById('resultBox');
+
+  if (!height || !weight || height <= 0 || weight <= 0) {
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+  errorMsg.classList.remove('show');
+
+  const r = calcBmi(weight, height, gender);
+  const diff = weight - r.stdWeight;
+
+  document.getElementById('bmiResult').textContent = r.bmi.toFixed(1);
+  document.getElementById('categoryResult').textContent = r.category;
+  document.getElementById('stdWeightResult').textContent = r.stdWeight.toFixed(1) + 'kg';
+  document.getElementById('diffResult').textContent =
+    (diff >= 0 ? '+' : '') + diff.toFixed(1) + 'kg';
+
+  resultBox.classList.add('show');
+});
+</script>
+
+</body>
+</html>
