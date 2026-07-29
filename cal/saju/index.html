@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>사주팔자 계산기 - 만세력 기반 정확한 사주 명식 확인</title>
+<meta name="description" content="생년월일시를 입력하면 절기·진태양시를 반영한 정확한 사주팔자(년주·월주·일주·시주)와 오행·십신 분포를 계산해드립니다." />
+<link rel="canonical" href="https://everylifeinfo.kr/cal/saju/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="사주팔자 계산기 - 만세력 기반 정확한 사주 명식 확인" />
+<meta property="og:description" content="생년월일시를 입력하면 절기·진태양시를 반영한 정확한 사주팔자(년주·월주·일주·시주)와 오행·십신 분포를 계산해드립니다." />
+<meta property="og:url" content="https://everylifeinfo.kr/cal/saju/" />
+<meta property="og:site_name" content="생활계산기" />
+<meta property="og:locale" content="ko_KR" />
+<link rel="stylesheet" href="/assets/style.css" />
+<style>
+  .palja-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-xs);
+    margin-top: var(--space-sm);
+  }
+  .palja-col {
+    text-align: center;
+  }
+  .palja-col .palja-label {
+    font-size: 12px;
+    color: var(--color-ink-muted-48);
+    margin-bottom: 6px;
+  }
+  .palja-col .palja-hanja {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    line-height: 1.2;
+  }
+  .palja-col .palja-hangul {
+    font-size: 13px;
+    color: var(--color-ink-muted-48);
+    margin-top: 2px;
+  }
+  .palja-col.unknown .palja-hanja {
+    color: var(--color-ink-muted-48);
+    font-size: 1.1rem;
+  }
+  @media (max-width: 420px) {
+    .palja-col .palja-hanja { font-size: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo">생활<span>계산기</span></a>
+    <div class="header-right">
+      <nav class="breadcrumb"><a href="/">홈</a> / 사주팔자 계산기</nav>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="site-menu" id="siteMenu">
+    <a class="home-link" href="/">🏠 홈으로</a>
+    <a href="/cal/man-age/">만나이 계산기</a>
+    <a href="/cal/school-age/">초등학교 입학연도 계산기</a>
+    <a href="/cal/salary/">연봉 실수령액 계산기</a>
+    <a href="/cal/severance/">퇴직금 계산기</a>
+    <a href="/cal/annual-leave/">연차 계산기</a>
+    <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+    <a href="/cal/lotto/">로또번호 생성기</a>
+    <a href="/cal/lotto-tax/">로또 당첨금 세금 계산기</a>
+    <a href="/cal/dday/">D-day 계산기</a>
+    <a href="/cal/dsr/">DSR 계산기</a>
+    <a href="/cal/ltv/">LTV 계산기</a>
+    <a href="/cal/bmi/">BMI 계산기</a>
+    <a href="/cal/bmr/">기초대사량 계산기</a>
+    <a href="/cal/saju/">사주팔자 계산기</a>
+  </nav>
+</header>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="wrap">
+  <h1><span class="emoji">🔮</span>사주팔자 계산기</h1>
+  <p class="lead">생년월일시를 입력하면 절기·진태양시를 반영한 정확한 사주 명식을 계산해드려요.</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="calType">달력 종류</label>
+      <select id="calType">
+        <option value="solar">양력</option>
+        <option value="lunar">음력</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="birthDate">생년월일</label>
+      <input type="date" id="birthDate" min="1900-01-01" max="2050-12-31" />
+    </div>
+    <div class="field">
+      <label>
+        <input type="checkbox" id="hourUnknown" style="width:auto;margin-right:6px;vertical-align:middle;" />
+        태어난 시각을 몰라요
+      </label>
+    </div>
+    <div class="field" id="timeField">
+      <label for="birthTime">태어난 시각</label>
+      <input type="time" id="birthTime" value="12:00" />
+    </div>
+    <div class="field">
+      <label for="city">출생지 <span class="hint">(진태양시 보정용)</span></label>
+      <select id="city">
+        <option value="126.98" selected>서울</option>
+        <option value="126.70">인천</option>
+        <option value="127.03">수원</option>
+        <option value="127.73">춘천</option>
+        <option value="127.39">대전</option>
+        <option value="127.49">청주</option>
+        <option value="127.15">전주</option>
+        <option value="126.85">광주</option>
+        <option value="128.60">대구</option>
+        <option value="129.08">부산</option>
+        <option value="129.31">울산</option>
+        <option value="128.68">창원</option>
+        <option value="126.53">제주</option>
+        <option value="off">보정 안 함 (표준시 그대로)</option>
+      </select>
+    </div>
+    <button class="btn" id="calcBtn">사주 계산하기</button>
+    <div class="error-msg" id="errorMsg">생년월일을 입력해주세요.</div>
+
+    <div class="result" id="resultBox">
+      <div class="headline">사주팔자 (년주·월주·일주·시주)</div>
+      <div class="palja-grid" id="paljaGrid"></div>
+      <div class="sub-list" id="correctionNote"></div>
+      <div class="sub-list">
+        <div class="row" style="display:block;padding-top:0;">
+          <span style="display:block;margin-bottom:6px;">오행 분포</span>
+          <span id="ohaengResult" style="font-weight:700;color:var(--color-ink);"></span>
+        </div>
+        <div class="row" style="display:block;">
+          <span style="display:block;margin-bottom:6px;">십신 분포</span>
+          <span id="shishenResult" style="font-weight:700;color:var(--color-ink);"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice">
+    이 계산기는 <strong>사주팔자(명식)와 오행·십신 개수만 정확하게 계산해서 보여드립니다.</strong>
+    성격·운세·궁합 같은 해석은 제공하지 않아요 — 해석은 유파(학파)마다 기준이 달라 "정답"이 없는
+    영역이라, 이 사이트는 누가 계산해도 같은 결과가 나오는 객관적인 명식 정보까지만 다룹니다.
+  </div>
+
+  <div class="explain">
+    <h2>사주팔자란?</h2>
+    <ul>
+      <li>사주팔자는 태어난 <strong>년·월·일·시</strong> 각각을 십간(十干)과 십이지(十二支)의 조합인 <strong>간지(干支)</strong>로 표현한 것입니다. 네 기둥(년주·월주·일주·시주) × 두 글자(천간+지지) = 총 여덟 글자라서 "팔자(八字)"라고 부릅니다.</li>
+      <li><strong>년주</strong>는 태어난 해의 간지, <strong>월주</strong>는 태어난 달의 간지, <strong>일주</strong>는 태어난 날의 간지(60일마다 한 바퀴 도는 60갑자 순환), <strong>시주</strong>는 태어난 시각의 간지입니다.</li>
+    </ul>
+
+    <h2>정확한 계산을 위해 반영한 두 가지</h2>
+    <ul>
+      <li><strong>절기 기준 년주·월주</strong>: 년주는 음력 1월 1일이 아니라 <strong>입춘</strong>(양력 2월 4일경) 기준으로 바뀝니다. 월주도 음력 달이 아니라 24절기 중 "절(節)"에 해당하는 12개 절기(입춘·경칩·청명·입하·망종·소서·입추·백로·한로·입동·대설·소한) 경계로 바뀝니다. 이 계산기는 시각 단위까지 정밀한 절기 데이터를 사용해서, 절기가 바뀌는 당일에 태어난 경우에도 정확하게 판별합니다.</li>
+      <li><strong>진태양시 보정</strong>: 한국 표준시(KST)는 동경 135°(일본 아카시) 기준인데, 실제 한국 위치는 그보다 서쪽(서울 기준 약 127°)이라 태양이 실제로 그 자리에 오는 시각(진태양시)이 시계보다 늦습니다. 서울 기준으로 약 32분 정도 보정이 필요한데, 이 계산기는 출생지를 선택하면 자동으로 이 보정을 적용합니다. 시주(시의 간지) 판별은 2시간 단위로 나뉘기 때문에, 이 보정이 없으면 경계 근처에 태어난 분들은 시주가 잘못 나올 수 있습니다.</li>
+    </ul>
+
+    <h2>오행·십신은 뭔가요</h2>
+    <ul>
+      <li><strong>오행(五行)</strong>은 목(木)·화(火)·토(土)·금(金)·수(水) 다섯 가지 기운으로, 여덟 글자(천간 4개 + 지지 4개) 각각이 이 중 하나에 해당합니다. 어떤 오행이 많고 적은지를 세어 보여드립니다.</li>
+      <li><strong>십신(十神)</strong>은 일간(태어난 날의 천간, 자기 자신을 상징)을 기준으로 나머지 일곱 글자와의 관계를 비겁·식상·재성·관성·인성 다섯 그룹으로 분류한 것입니다. 이 계산기는 각 그룹에 몇 글자가 해당하는지 개수만 보여드리고, "이게 좋다/나쁘다" 같은 해석은 하지 않습니다.</li>
+    </ul>
+
+    <h2>계산 엔진 안내</h2>
+    <ul>
+      <li>이 계산기는 <a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noopener">lunar-javascript</a>(MIT 라이선스, 6tail 제작)라는 오픈소스 만세력 엔진으로 절기·간지를 계산합니다. 자세한 라이선스 고지는 <a href="/about/">사이트 소개</a> 하단 또는 저장소의 THIRD_PARTY_LICENSES 문서를 참고하세요.</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <ul>
+      <li><strong>다른 사주 앱이랑 결과가 조금 달라요.</strong> 진태양시 보정 적용 여부, 지장간(지지 속 숨은 천간) 반영 방식, 절기 데이터 소스 차이로 앱마다 미세하게 다를 수 있습니다. 특히 절기 경계나 시주 경계 근처에 태어났다면 차이가 날 가능성이 더 큽니다.</li>
+      <li><strong>진태양시 보정을 끄면 뭐가 달라지나요?</strong> 시계에 나온 시각을 그대로 써서 계산합니다. 일부 만세력 책이나 사이트는 이 보정을 적용하지 않는 경우도 있어, 비교해보실 때 "보정 안 함" 옵션으로도 확인해보실 수 있습니다.</li>
+      <li><strong>태어난 시각을 모르면 어떻게 되나요?</strong> 년주·월주·일주는 정상적으로 계산되고, 시주만 "모름"으로 표시됩니다. 시주가 필요한 정확한 명식을 원하시면 출생증명서나 병원 기록에서 시각을 확인해보시길 권합니다.</li>
+      <li><strong>절기가 바뀌는 날 태어났는데 시각을 모르면요?</strong> 아주 드물게, 절기 전환이 그날 있었다면 시각을 모를 경우 년주나 월주 자체가 불확실할 수 있습니다. 이런 경우는 출생 시각 확인이 특히 중요합니다.</li>
+      <li><strong>왜 성격이나 운세 해석은 안 보여주나요?</strong> 오행·십신 개수까지는 계산법이 정해져 있어 객관적이지만, 그걸 성격·운세로 풀이하는 방식은 유파마다 기준이 달라 "정답"이 없는 영역입니다. 이 사이트는 정확성을 지킬 수 있는 부분까지만 다루기로 했습니다.</li>
+      <li><strong>1900년 이전이나 2050년 이후 생일도 계산되나요?</strong> 이 계산기는 1900~2050년 범위를 지원합니다. 그 밖의 연도는 계산되지 않습니다.</li>
+    </ul>
+  </div>
+
+  <div class="related">
+    <h2>다른 계산기도 확인해보세요</h2>
+    <div class="related-grid">
+      <a href="/cal/man-age/">만나이 계산기</a>
+      <a href="/cal/moving-day/">이사 손없는날 계산기</a>
+      <a href="/cal/dday/">D-day 계산기</a>
+      <a href="/cal/bmi/">BMI 계산기</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    사주 명식은 전통 명리학의 계산 방식을 따른 참고용 정보이며, 과학적으로 검증된 내용이 아닙니다.
+    <div class="footer-links"><a href="/privacy/">개인정보처리방침</a> · <a href="/terms/">이용약관</a> · <a href="/about/">사이트 소개</a> · <a href="/contact/">문의</a></div>
+  </footer>
+</main>
+
+<script src="/assets/lunar-javascript.js"></script>
+<script src="/assets/common.js"></script>
+<script>
+const STEM_KO = {'甲':'갑','乙':'을','丙':'병','丁':'정','戊':'무','己':'기','庚':'경','辛':'신','壬':'임','癸':'계'};
+const BRANCH_KO = {'子':'자','丑':'축','寅':'인','卯':'묘','辰':'진','巳':'사','午':'오','未':'미','申':'신','酉':'유','戌':'술','亥':'해'};
+const STEM_OHAENG = {'甲':'목','乙':'목','丙':'화','丁':'화','戊':'토','己':'토','庚':'금','辛':'금','壬':'수','癸':'수'};
+const BRANCH_OHAENG = {'寅':'목','卯':'목','巳':'화','午':'화','辰':'토','戌':'토','丑':'토','未':'토','申':'금','酉':'금','亥':'수','子':'수'};
+// lunar-javascript 소스(LunarUtil.I18N_MESSAGES 'ss.*' 항목)에서 확인한
+// 십신 출력 문자열은 정확히 이 10개뿐이다(간체자 고정, '七杀'는 '偏官'의
+// 별칭인 칠살七殺 표기). 추측 없이 소스 대조로 확정한 매핑.
+const SHISIN_KO = {
+  '比肩':'비견', '劫财':'겁재', '食神':'식신', '伤官':'상관',
+  '偏财':'편재', '正财':'정재', '七杀':'편관', '正官':'정관',
+  '偏印':'편인', '正印':'정인',
+};
+const SHISIN_GROUP = {
+  '比肩':'비겁', '劫财':'비겁', '食神':'식상', '伤官':'식상',
+  '偏财':'재성', '正财':'재성', '七杀':'관성', '正官':'관성',
+  '偏印':'인성', '正印':'인성',
+};
+const KST_MERIDIAN = 135;
+
+function lonOffsetMin(lon) {
+  return Math.round((lon - KST_MERIDIAN) * 4);
+}
+
+function buildEightChar(inp) {
+  const h = inp.hourUnknown ? 12 : inp.hour;
+  const min = inp.hourUnknown ? 0 : inp.minute;
+  const solar = inp.isLunar
+    ? Lunar.fromYmdHms(inp.year, inp.month, inp.day, h, min, 0).getSolar()
+    : Solar.fromYmdHms(inp.year, inp.month, inp.day, h, min, 0);
+
+  const offsetMin = inp.lonOff ? 0 : lonOffsetMin(inp.lon);
+  const shifted = new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay(), solar.getHour(), solar.getMinute() + offsetMin, 0);
+  const corrected = Solar.fromYmdHms(shifted.getFullYear(), shifted.getMonth() + 1, shifted.getDate(), shifted.getHours(), shifted.getMinutes(), 0);
+  const lunar = corrected.getLunar();
+  const ec = lunar.getEightChar();
+
+  const pillars = {
+    year: { gan: ec.getYearGan(), zhi: ec.getYearZhi(), ganShisin: ec.getYearShiShenGan(), zhiShisin: ec.getYearShiShenZhi()[0] },
+    month: { gan: ec.getMonthGan(), zhi: ec.getMonthZhi(), ganShisin: ec.getMonthShiShenGan(), zhiShisin: ec.getMonthShiShenZhi()[0] },
+    day: { gan: ec.getDayGan(), zhi: ec.getDayZhi(), ganShisin: null, zhiShisin: ec.getDayShiShenZhi()[0] },
+    time: inp.hourUnknown ? null : { gan: ec.getTimeGan(), zhi: ec.getTimeZhi(), ganShisin: ec.getTimeShiShenGan(), zhiShisin: ec.getTimeShiShenZhi()[0] },
+  };
+
+  return { pillars, offsetMin, correctedTime: corrected };
+}
+
+function renderPalja(pillars) {
+  const grid = document.getElementById('paljaGrid');
+  grid.innerHTML = '';
+  const order = [['year', '년주'], ['month', '월주'], ['day', '일주'], ['time', '시주']];
+  order.forEach(function ([key, label]) {
+    const p = pillars[key];
+    const col = document.createElement('div');
+    if (!p) {
+      col.className = 'palja-col unknown';
+      col.innerHTML = '<div class="palja-label">' + label + '</div><div class="palja-hanja">모름</div>';
+    } else {
+      col.className = 'palja-col';
+      col.innerHTML =
+        '<div class="palja-label">' + label + '</div>' +
+        '<div class="palja-hanja">' + p.gan + p.zhi + '</div>' +
+        '<div class="palja-hangul">' + STEM_KO[p.gan] + BRANCH_KO[p.zhi] + '</div>';
+    }
+    grid.appendChild(col);
+  });
+}
+
+function countOhaeng(pillars) {
+  const counts = { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 };
+  Object.keys(pillars).forEach(function (key) {
+    const p = pillars[key];
+    if (!p) return;
+    counts[STEM_OHAENG[p.gan]]++;
+    counts[BRANCH_OHAENG[p.zhi]]++;
+  });
+  return counts;
+}
+
+function countShisin(pillars) {
+  const groups = { 비겁: 0, 식상: 0, 재성: 0, 관성: 0, 인성: 0 };
+  Object.keys(pillars).forEach(function (key) {
+    const p = pillars[key];
+    if (!p) return;
+    if (p.ganShisin && SHISIN_GROUP[p.ganShisin]) groups[SHISIN_GROUP[p.ganShisin]]++;
+    if (p.zhiShisin && SHISIN_GROUP[p.zhiShisin]) groups[SHISIN_GROUP[p.zhiShisin]]++;
+  });
+  return groups;
+}
+
+document.getElementById('hourUnknown').addEventListener('change', function () {
+  document.getElementById('timeField').style.display = this.checked ? 'none' : 'block';
+});
+
+document.getElementById('calcBtn').addEventListener('click', function () {
+  const calType = document.getElementById('calType').value;
+  const dateVal = document.getElementById('birthDate').value;
+  const hourUnknown = document.getElementById('hourUnknown').checked;
+  const timeVal = document.getElementById('birthTime').value || '12:00';
+  const cityVal = document.getElementById('city').value;
+  const errorMsg = document.getElementById('errorMsg');
+  const resultBox = document.getElementById('resultBox');
+
+  if (!dateVal) {
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+  errorMsg.classList.remove('show');
+
+  const [year, month, day] = dateVal.split('-').map(Number);
+  const [hour, minute] = timeVal.split(':').map(Number);
+  const lonOff = cityVal === 'off';
+  const lon = lonOff ? 0 : parseFloat(cityVal);
+
+  let r;
+  try {
+    r = buildEightChar({
+      year, month, day, hour, minute, hourUnknown,
+      isLunar: calType === 'lunar',
+      lonOff, lon,
+    });
+  } catch (e) {
+    errorMsg.textContent = '지원하지 않는 날짜입니다. (1900~2050년만 지원)';
+    errorMsg.classList.add('show');
+    resultBox.classList.remove('show');
+    return;
+  }
+
+  renderPalja(r.pillars);
+
+  const correctionNote = document.getElementById('correctionNote');
+  if (lonOff) {
+    correctionNote.innerHTML = '<div class="row"><span>진태양시 보정</span><span>미적용 (표준시 그대로)</span></div>';
+  } else {
+    const ct = r.correctedTime;
+    const pad = (n) => String(n).padStart(2, '0');
+    correctionNote.innerHTML = '<div class="row"><span>진태양시 보정 후 계산시각</span><span>' +
+      ct.getYear() + '-' + pad(ct.getMonth()) + '-' + pad(ct.getDay()) + ' ' + pad(ct.getHour()) + ':' + pad(ct.getMinute()) +
+      ' (' + (r.offsetMin >= 0 ? '+' : '') + r.offsetMin + '분)</span></div>';
+  }
+
+  const ohaeng = countOhaeng(r.pillars);
+  document.getElementById('ohaengResult').textContent =
+    ['목', '화', '토', '금', '수'].map(function (k) { return k + ' ' + ohaeng[k] + '개'; }).join(' · ');
+
+  const shisin = countShisin(r.pillars);
+  document.getElementById('shishenResult').textContent =
+    ['비겁', '식상', '재성', '관성', '인성'].map(function (k) { return k + ' ' + shisin[k] + '개'; }).join(' · ');
+
+  resultBox.classList.add('show');
+});
+</script>
+
+</body>
+</html>

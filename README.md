@@ -1,6 +1,6 @@
 # 생활계산기 모음 (calc-hub)
 
-만나이, 연봉 실수령액, 퇴직금, 연차, 초등학교 입학연도, 이사 손없는날, 로또번호 생성기, 로또 당첨금 세금, D-day, DSR, LTV, BMI, 기초대사량까지
+만나이, 연봉 실수령액, 퇴직금, 연차, 초등학교 입학연도, 이사 손없는날, 로또번호 생성기, 로또 당첨금 세금, D-day, DSR, LTV, BMI, 기초대사량, 사주팔자까지
 한 도메인 아래 `/cal/<slug>/` 경로로 묶은 순수 정적 HTML/CSS/JS 사이트입니다.
 빌드 도구, 프레임워크, 서버 없이 그대로 배포할 수 있습니다.
 
@@ -15,6 +15,7 @@ calc-hub/
     style.css                공통 스타일
     common.js                햄버거 메뉴 등 공통 동작
     lunar.js                 음양력 변환 (손없는날 계산기용, MIT 라이선스 이식)
+    lunar-javascript.js      절기 기반 만세력 엔진 (사주팔자 계산기용, MIT 라이선스, terser 압축)
   cal/
     man-age/index.html       만나이 계산기
     school-age/index.html    초등학교 입학연도 계산기
@@ -29,11 +30,12 @@ calc-hub/
     ltv/index.html           LTV 계산기
     bmi/index.html           BMI 계산기
     bmr/index.html           기초대사량 계산기
+    saju/index.html          사주팔자 계산기
   privacy/index.html         개인정보처리방침
   terms/index.html           이용약관
   about/index.html           사이트 소개
   contact/index.html         문의하기
-  THIRD_PARTY_LICENSES.md    lunar.js 출처 및 MIT 라이선스 고지
+  THIRD_PARTY_LICENSES.md    lunar.js·lunar-javascript.js 출처 및 MIT 라이선스 고지
 ```
 
 ## 로컬에서 확인하기

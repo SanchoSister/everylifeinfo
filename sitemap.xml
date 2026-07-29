@@ -85,6 +85,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://everylifeinfo.kr/cal/saju/</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://everylifeinfo.kr/privacy/</loc>
     <lastmod>2026-07-21</lastmod>
     <changefreq>yearly</changefreq>
