@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cal.everylifeinfo.kr/sitemap.xml

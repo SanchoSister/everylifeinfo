@@ -5,6 +5,4 @@ main = "worker.js"
 [assets]
 directory = "./"
 binding = "ASSETS"
-run_worker_first = [
-  "/naverf83f6bc5056c2dc94735bcb90f331e48.html",
-]
+run_worker_first = true
